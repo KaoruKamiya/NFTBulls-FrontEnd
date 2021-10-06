@@ -28,6 +28,7 @@ import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 import RoleSelection from "./views/roleSelection";
+import ExpertList from "./views/expertList";
 
 const { ethers } = require("ethers");
 /*
@@ -458,16 +459,6 @@ function App(props) {
               YourContract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
-            </Link>
-          </Menu.Item>
           <Menu.Item key="/expert">
           <Link
             onClick={() => {
@@ -528,6 +519,16 @@ function App(props) {
             Role Selection
           </Link>
         </Menu.Item>
+        <Menu.Item key="/expertList">
+        <Link
+          onClick={() => {
+            setRoute("/expertList");
+          }}
+          to="/expertList"
+        >
+          Expert List
+        </Link>
+      </Menu.Item>
         </Menu>
 
         <Switch>
@@ -545,14 +546,6 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
-            />
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
             />
           </Route>
           <Route path="/lender">
@@ -622,7 +615,10 @@ function App(props) {
           </Route>
         <Route path="/roleSelection">
           <RoleSelection/>
-        </Route>
+            </Route>
+          <Route path="/expertList">
+            <ExpertList />
+          </Route>
         </Switch>
       </BrowserRouter>
 
