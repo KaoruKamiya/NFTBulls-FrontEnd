@@ -27,6 +27,7 @@ import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
+import RoleSelection from "./views/roleSelection";
 
 const { ethers } = require("ethers");
 /*
@@ -171,6 +172,7 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+  const [isLender, setIsLender] = useState(false);
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -516,6 +518,16 @@ function App(props) {
               Subgraph
             </Link>
           </Menu.Item>
+          <Menu.Item key="/roleSelection">
+          <Link
+            onClick={() => {
+              setRoute("/roleSelection");
+            }}
+            to="/roleSelection"
+          >
+            Role Selection
+          </Link>
+        </Menu.Item>
         </Menu>
 
         <Switch>
@@ -608,6 +620,9 @@ function App(props) {
               mainnetProvider={mainnetProvider}
             />
           </Route>
+        <Route path="/roleSelection">
+          <RoleSelection/>
+        </Route>
         </Switch>
       </BrowserRouter>
 
