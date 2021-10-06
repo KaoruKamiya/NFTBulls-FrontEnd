@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useContext} from "react";
 import {Table, Tag, Space} from 'antd';
+import { DummyDataContext } from "../context/dummy";
 
 const {Column, ColumnGroup} = Table;
 
@@ -34,8 +35,12 @@ export default function ExpertList() {
         },
     ];
 
+    const {name, expertListData} = useContext(DummyDataContext);
+
+
     return(
     <div style={{width: "80%", margin: "auto", marginTop: 64 }}>
+        <h1>YO!! {expertListData.map(n => n)}</h1>
         <Table dataSource={data}>
         <Column title="Expert's Name" dataIndex="username" key="username" />
         <Column title="Experience in Months" dataIndex="experienceInMonths" key="experienceInMonths" />
