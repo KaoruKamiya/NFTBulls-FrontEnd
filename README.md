@@ -8,7 +8,7 @@ The protocol for lending and borrowing of on-chain loans at expert approved pric
 
 Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+> clone/fork 🐂 NFTBulls:
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
