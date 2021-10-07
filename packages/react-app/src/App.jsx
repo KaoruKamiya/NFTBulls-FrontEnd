@@ -614,7 +614,9 @@ function App(props) {
             />
           </Route>
         <Route path="/roleSelection">
-          <RoleSelection/>
+          <RoleSelection
+            mainnetProvider={mainnetProvider}
+          />
             </Route>
           <Route path="/expertList">
             <ExpertList />

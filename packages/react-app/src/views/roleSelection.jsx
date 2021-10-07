@@ -1,6 +1,10 @@
 import React, { useState, useContext } from "react";
 import { Button, Card, Divider, Modal, Typography, Form, Input, InputNumber, Select, Switch, } from "antd";
 import { DummyDataContext } from "../context/dummy";
+import { Address, AddressInput } from "../components";
+import { useTokenList } from "eth-hooks/dapps/dex";
+
+const {Option} = Select;
 
 const {Text} = Typography;
 const layout = {
@@ -15,10 +19,14 @@ const layout = {
     },
   };
 
-export default function RoleSelection() {
-    //<Button onClick={() => setExpertListData([...expertListData, "Vamsi"])}>Change Name</Button>
+export default function RoleSelection({mainnetProvider}) {
+    const [selectedToken, setSelectedToken] = useState("Pick a token!");
     const [modalVisible, setModalVisible] = useState(false);
+    const [lenderModalVisible, setLenderModalVisible] = useState(false);
 
+    const listOfTokens = useTokenList(
+        "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json",
+    );
     const validateMessages = {
         required: "${label} is required!",
         types: {
@@ -29,19 +37,23 @@ export default function RoleSelection() {
           range: "${label} must be between ${min} and ${max}"
         }
     };
-
-    const [confirmLoading, setConfirmLoading] = React.useState(false);
-
-    const setModalVisibleHelper = (modal1Visible) => {
-        setModalVisible(modal1Visible);
-    };
     
     const onFinish = (values) => {
-        console.log(values);
-        alert(values);
+        console.log(values.user.name, values.user.association, values.user.experience, values.user.twthandle);
+        setExpertListData([...expertListData, {key:JSON.stringify(expertListData.length + 1),
+                                                twthandle: "https://twitter.com/".concat(values.user.twthandle.toString()),
+                                                ... values.user,
+                                                expertise: values.projects,
+                                                loansFacilitated: 0,
+                                                verified: "Pending"}]);
     };
 
-    const {name, setName, expertListData, setExpertListData} = useContext(DummyDataContext);
+    const onLenderFinish = (values) => {
+        console.log(values.user);
+        alert(values.user.nftAddress);
+    }
+
+    const {expertListData, setExpertListData} = useContext(DummyDataContext);
 
     const NFTList = [
         "CryptoPunks",
@@ -97,7 +109,7 @@ export default function RoleSelection() {
                         </div>
                         <Divider />
                         <div style={{ marginTop: 20 }}>
-                            <Button type="primary" size="large" style={{marginBottom: 20}}>NFT Lender</Button>
+                            <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => setLenderModalVisible(true)}>NFT Lender</Button>
                             <br/>
                             <Text>
                                 We welcome all NFT holders on our platform. With our protocol, you can now generate some passive income from your NFTs by lending your
@@ -120,7 +132,7 @@ export default function RoleSelection() {
             <Modal title="Expert Form" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
                 <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages} >
                     <Form.Item
-                        name={["user", "name"]}
+                        name={["user", "username"]}
                         label="Username"
                         rules={[
                         {
@@ -153,7 +165,7 @@ export default function RoleSelection() {
                     <Input placeholder="Just the handle" />
                     </Form.Item>
                     <Form.Item
-                        name={["user", "experience"]}
+                        name={["user", "experienceInMonths"]}
                         label="Experience (Months)"
                         rules={[
                         {
@@ -167,7 +179,7 @@ export default function RoleSelection() {
                     <InputNumber />
                     </Form.Item>
                     <Form.Item
-                        name="select-multiple"
+                        name="projects"
                         label="Select NFT Project(s)"
                         rules={[
                         {
@@ -186,6 +198,54 @@ export default function RoleSelection() {
                             Submit
                         </Button>
                     </Form.Item>
+                </Form>
+            </Modal>
+            <Modal title="Lender Form" visible={lenderModalVisible} onOk={() => setLenderModalVisible(false)} onCancel={() => setLenderModalVisible(false)}>
+                <Form {...layout} name="nest-messages" onFinish={onLenderFinish} validateMessages={validateMessages} >
+                    <Form.Item
+                        name={["user", "nftAddress"]}
+                        label="NFT Address"
+                        rules={[
+                        {
+                            required: true
+                        }
+                        ]}
+                        >
+                        <AddressInput ensProvider={mainnetProvider} />
+                    </Form.Item>
+                    <Form.Item
+                        name={["user", "collateralAsset"]}
+                        label="Collateral Asset"
+                        rules={[
+                        {
+                            required: true,
+                            message: 'Please select desired collateral asset!!',
+                        },
+                        ]}
+                    >
+                        <Select placeholder>
+                        {listOfTokens.map(token => <Option value={token.symbol}> {token.symbol} </Option>)}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name={["user", "maxRentalDays"]}
+                        label="Max Rental Days"
+                        rules={[
+                        {
+                            type: "number",
+                            min: 1,
+                            max: 367,
+                            required: true
+                        }
+                        ]}
+                    >
+                    <InputNumber />
+                    </Form.Item>
+                    <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                </Form.Item>
                 </Form>
             </Modal>
         </div>
