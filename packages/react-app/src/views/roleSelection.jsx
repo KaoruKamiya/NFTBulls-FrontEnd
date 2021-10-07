@@ -140,7 +140,18 @@ export default function RoleSelection() {
                         ]}
                         >
                     <Input placeholder="Ex. YGG | ThugDAO etc." />
-                     </Form.Item>
+                    </Form.Item>
+                    <Form.Item
+                        name={["user", "twthandle"]}
+                        label="Twitter Handle"
+                        rules={[
+                        {
+                            required: true
+                        }
+                        ]}
+                        >
+                    <Input placeholder="Just the handle" />
+                    </Form.Item>
                     <Form.Item
                         name={["user", "experience"]}
                         label="Experience (Months)"

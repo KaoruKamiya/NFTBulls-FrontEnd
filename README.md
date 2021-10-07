@@ -23,7 +23,7 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 > clone/fork 🐂 NFTBulls:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/gangadharBantai/NFTBulls-FrontEnd
 ```
 
 > install and start your 👷‍ Hardhat chain:
