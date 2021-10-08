@@ -3,6 +3,7 @@ import { Button, Card, Divider, Modal, Typography, Form, Input, InputNumber, Sel
 import { DummyDataContext } from "../context/dummy";
 import { Address, AddressInput } from "../components";
 import { useTokenList } from "eth-hooks/dapps/dex";
+import { useHistory } from "react-router-dom";
 
 const {Option} = Select;
 
@@ -20,7 +21,6 @@ const layout = {
   };
 
 export default function RoleSelection({mainnetProvider}) {
-    const [selectedToken, setSelectedToken] = useState("Pick a token!");
     const [modalVisible, setModalVisible] = useState(false);
     const [lenderModalVisible, setLenderModalVisible] = useState(false);
 
@@ -51,9 +51,17 @@ export default function RoleSelection({mainnetProvider}) {
     const onLenderFinish = (values) => {
         console.log(values.user);
         alert(values.user.nftName);
+        setNftName(values.user.nftName);
+    }
+
+    const history = useHistory();
+    const routeChange = () => {
+        let pathName = '/borrower';
+        history.push(pathName); 
     }
 
     const {expertListData, setExpertListData} = useContext(DummyDataContext);
+    const {nftName, setNftName} = useContext(DummyDataContext);
 
     const NFTList = [
         "CryptoPunks",
@@ -119,7 +127,7 @@ export default function RoleSelection({mainnetProvider}) {
                         </div>
                         <Divider />
                         <div style={{ marginTop: 20 }}>
-                            <Button type="primary" size="large" style={{marginBottom: 20}}>NFT Borrower</Button>
+                            <Button type="primary" size="large" style={{marginBottom: 20}} onClick={routeChange}>NFT Borrower</Button>
                             <br/>
                             <Text>
                                 We welcome all NFT enthusiasts on our platform who want to get their hands on a particular NFT, but shy away from buying it because of

@@ -35,9 +35,10 @@ export const DummyDataContextProvider = props => {
           twthandle: "kJoe",
         },
     ]);
+    const [nftName, setNftName] = useState('Default Name');
 
     return (
-        <DummyDataContext.Provider value={{expertListData, setExpertListData}}>
+        <DummyDataContext.Provider value={{nftName, setNftName, expertListData, setExpertListData}}>
             {props.children}
         </DummyDataContext.Provider>
     )

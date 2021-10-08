@@ -21,7 +21,7 @@ import {
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, Expert, Lender } from "./views";
+import { ExampleUI, Hints, Subgraph, Expert, Lender, Borrower } from "./views";
 
 import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
@@ -499,14 +499,14 @@ function App(props) {
               Mainnet DAI
             </Link>
           </Menu.Item>
-          <Menu.Item key="/subgraph">
+          <Menu.Item key="/borrower">
             <Link
               onClick={() => {
-                setRoute("/subgraph");
+                setRoute("/borrower");
               }}
-              to="/subgraph"
+              to="/borrower"
             >
-              Subgraph
+              NFT Gallery
             </Link>
           </Menu.Item>
           <Menu.Item key="/roleSelection">
@@ -605,13 +605,8 @@ function App(props) {
             />
             */}
           </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
-            />
+          <Route path="/borrower">
+            <Borrower />
           </Route>
         <Route path="/roleSelection">
           <RoleSelection
