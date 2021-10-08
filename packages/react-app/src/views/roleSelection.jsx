@@ -50,7 +50,7 @@ export default function RoleSelection({mainnetProvider}) {
 
     const onLenderFinish = (values) => {
         console.log(values.user);
-        alert(values.user.nftAddress);
+        alert(values.user.nftName);
     }
 
     const {expertListData, setExpertListData} = useContext(DummyDataContext);
@@ -202,6 +202,17 @@ export default function RoleSelection({mainnetProvider}) {
             </Modal>
             <Modal title="Lender Form" visible={lenderModalVisible} onOk={() => setLenderModalVisible(false)} onCancel={() => setLenderModalVisible(false)}>
                 <Form {...layout} name="nest-messages" onFinish={onLenderFinish} validateMessages={validateMessages} >
+                    <Form.Item
+                        name={["user", "nftName"]}
+                        label="Name of NFT"
+                        rules={[
+                        {
+                            required: true
+                        }
+                        ]}
+                    >
+                        <Input placeholder="Name of NFT to be listed" />
+                    </Form.Item>
                     <Form.Item
                         name={["user", "nftAddress"]}
                         label="NFT Address"
