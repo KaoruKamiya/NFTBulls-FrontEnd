@@ -65,5 +65,8 @@
       "**/hardhat-ts/**"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "moralis": "^0.0.74",
+    "react-moralis": "^0.2.4"
+  }
 }

@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
 import { DummyDataContextProvider } from "./context/dummy";
+import {MoralisProvider} from 'react-moralis';
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
@@ -29,7 +30,9 @@ const app = (
 ReactDOM.render(
   <ApolloProvider client={client}>
     <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      {app}
+      <MoralisProvider appId = "ea6nGhL7KG4i1ztzTcnHYfVkGZVn3oDGnxqFT784" serverUrl = "https://pfalb9lepomh.moralishost.com:2053/server">
+        {app}
+      </MoralisProvider>
     </ThemeSwitcherProvider>
   </ApolloProvider>,
   document.getElementById("root"),
