@@ -37,6 +37,9 @@ export default function RoleSelection({mainnetProvider}) {
           range: "${label} must be between ${min} and ${max}"
         }
     };
+
+    const {expertListData, setExpertListData} = useContext(DummyDataContext);
+    const {nftData, setNftData} = useContext(DummyDataContext);
     
     const onFinish = (values) => {
         console.log(values.user.name, values.user.association, values.user.experience, values.user.twthandle);
@@ -59,9 +62,6 @@ export default function RoleSelection({mainnetProvider}) {
         let pathName = '/borrower';
         history.push(pathName); 
     }
-
-    const {expertListData, setExpertListData} = useContext(DummyDataContext);
-    const {nftName, setNftName} = useContext(DummyDataContext);
 
     const NFTList = [
         "CryptoPunks",
