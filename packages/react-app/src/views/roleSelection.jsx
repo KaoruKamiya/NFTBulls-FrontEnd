@@ -264,7 +264,7 @@ export default function RoleSelection({mainnetProvider}) {
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>
-                </Form.Item>
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>
