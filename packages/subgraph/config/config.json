@@ -1,3 +1,12 @@
 {
-  "localhost_YourContractAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  "localhost_YourContractAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "localhost_NFTRentAddress": "0x9A676e781A523b5d0C0e43731313A708CB607508",
+  "localhost_NFTRentStorageAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+  "localhost_VerificationAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "localhost_YourNFTAddress": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+  "rinkeby_NFTRentAddress": "0xf7fd8F10f5190978B7d11C9a376f9A973E5450F5",
+  "rinkeby_NFTRentStorageAddress": "0x2839609e1338AE651fB4100315F8F6afEb35514F",
+  "rinkeby_VerificationAddress": "0xF18a16aad6Ab1a699b4E7f7cBaEbC16E7A0d352B",
+  "rinkeby_YourContractAddress": "0xE40C2D5A41Fc8622F20d445cb9ea90A96884Cbca",
+  "rinkeby_YourNFTAddress": "0x3603895a853602E52EC71C51B3c50e4FdD1543A6"
 }

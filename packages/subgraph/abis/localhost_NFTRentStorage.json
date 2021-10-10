@@ -1,0 +1,345 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "NFTRentLineCounter",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "NFTRentLineInfo",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "exists",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "lender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rentalPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "NftAsset",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "NftId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "collateralAsset",
+        "type": "address"
+      },
+      {
+        "internalType": "enum NFTRentStorage.NFTRentLineStatus",
+        "name": "currentStatus",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "NFTRentLineUsage",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "repayments",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "withdrawInterval",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "repaymentInterval",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "repaymentsCompleted",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rentalPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "loanStartTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastRepaymentTime",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "expertFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "expertStake",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "feeFraction",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "liquidation",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "liquidationThreshold",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "quoteVarsInfo",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "NFTRent",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "NFTId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "NFTOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxRentalDuration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "dailyRentalPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "repayInterval",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "collateralAsset",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "expert",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "verified",
+        "type": "bool"
+      },
+      {
+        "internalType": "enum NFTRentStorage.QuoteStatus",
+        "name": "quoteStatus",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bool",
+        "name": "Toescrow",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "Towallet",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stakeFraction",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "yearInSeconds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
