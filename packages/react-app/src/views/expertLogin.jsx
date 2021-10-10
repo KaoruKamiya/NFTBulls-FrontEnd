@@ -1,4 +1,4 @@
-import { Button, Form, Modal, Input, Card, Row, Col } from "antd";
+import { Button, Form, Modal, Input, Card, Row, Col, InputNumber, Select } from "antd";
 import React, { useState, useContext } from "react";
 import { Address, AddressInput } from "../components";
 import { DummyDataContext } from "../context/dummy";
@@ -20,8 +20,10 @@ const layout = {
 export default function Expert({  
     mainnetProvider, 
 }) {
-
   const [modalVisible, setModalVisible] = useState(false);
+  const [loanModalVisible, setLoanModalVisible] = useState(false);
+
+  const borrowOptions = [`Borrower's Wallet`, `MultiSig Wallet`];
 
   const validateMessages = {
     required: "${label} is required!",
@@ -39,9 +41,9 @@ export default function Expert({
     alert(values.user.borrowerAddress);
   };
 
-  const onClick = () =>  {
-    alert("Rent this NFT");
-  };
+  const onLoanFinish = (values) => {
+
+  }
 
   const {nftData} = useContext(DummyDataContext);
 
@@ -52,7 +54,7 @@ export default function Expert({
           <br/>
         </div>
         <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 64 }}>
-        <h1>NFT Gallery (Borrower View) </h1> 
+        <h1>Expert NFT Gallery</h1> 
             <div style={{padding: "30px"}}>
                 <Row gutter={16}>
                     {
@@ -61,11 +63,13 @@ export default function Expert({
                                 <Card title={nftInfo.nftName}
                                     hoverable={true} 
                                     bordered={true} 
-                                    extra={<Button size="large" style={{border: "border: 2px solid #4CAF50"}} onClick={onClick}>Propose Loan Terms</Button>}
+                                    extra={<Button size="large" style={{border: "border: 2px solid #4CAF50"}} onClick={() => setLoanModalVisible(true)}>Propose Loan Terms</Button>}
                                     cover={<img alt={nftInfo.nftName} src={nftInfo.img}/>}
                                     size = "large"
                                 >
                                     <Meta description = {"NFT Address: ".concat(nftInfo.nftAddress)}/>
+                                    <br />
+                                    <Meta description = {"NFT Token ID: ".concat(nftInfo.tokenID)}/>
                                     <br />
                                     <Meta description = {"Desired Collateral Asset: ".concat(nftInfo.collateralAsset)}/>
                                     <br />
@@ -108,6 +112,74 @@ export default function Expert({
                 Submit
               </Button>
             </Form.Item>
+          </Form>
+        </Modal>
+        <Modal title="Loan Terms" visible={loanModalVisible} onOk={() => setLoanModalVisible(false)} onCancel={() => setLoanModalVisible(false)}>
+          <Form {...layout} name="nest-messages" onFinish={onLoanFinish} validateMessages={validateMessages} >
+              <Form.Item
+                name={["user", "borrowType"]}
+                label="Transfer NFT to"
+                rules={[
+                {
+                    required: true,
+                    message: 'Please select where the NFT should be transferred!!',
+                },
+                ]}
+              >
+                <Select placeholder="NFT can be transferred to...">
+                  {borrowOptions.map(borrowOption => <Option value={borrowOption.toString()}> {borrowOption.toString()} </Option>)}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                  name={["user", "collateralAmount"]}
+                  label="Collateral Amount"
+                  rules={[
+                  {
+                      required: true,
+                      message: 'Please provide suitable collateral amount for this NFT!',
+                      type: "number",
+                      min: 0,
+                      max: 1000000000,
+                  }
+                  ]}
+              >
+                <InputNumber />
+              </Form.Item>
+              <Form.Item
+                name={["user", "dailyRentPrice"]}
+                label="Daily Rent"
+                rules={[
+                {
+                    required: true,
+                    message: 'Please provide suitable daily rent for this NFT!',
+                    type: "number",
+                    min: 0,
+                    max: 1000000000,
+                }
+                ]}
+              >
+                <InputNumber />
+              </Form.Item>
+              <Form.Item
+                name={["user", "repayInterval"]}
+                label="Repayment Interval"
+                rules={[
+                {
+                    required: true,
+                    message: 'Please provide suitable repayment interval for this loan',
+                    type: "number",
+                    min: 0,
+                    max: 1000000000,
+                }
+                ]}
+              >
+                <InputNumber />
+              </Form.Item>
+              <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                  <Button type="primary" htmlType="submit">
+                      Submit
+                  </Button>
+              </Form.Item>
           </Form>
         </Modal>
       </div>
