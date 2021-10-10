@@ -61,7 +61,7 @@ export default function Expert({
           borrowType: values.user.borrowType,
           collateralAmount: values.user.collateralAmount,
           dailyRentPrice: values.user.dailyRentPrice,
-          repayInterval: values.user.repayInterval
+          repayInterval: values.user.repayInterval,
         }]);
       }
     }
@@ -205,7 +205,7 @@ export default function Expert({
                 }
                 ]}
               >
-                <InputNumber />
+                <InputNumber placeholder = "in days ... " />
               </Form.Item>
               <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                   <Button type="primary" htmlType="submit">
