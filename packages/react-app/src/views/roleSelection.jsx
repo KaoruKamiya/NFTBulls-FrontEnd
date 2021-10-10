@@ -1,9 +1,10 @@
 import React, { useState, useContext } from "react";
-import { Button, Card, Divider, Modal, Typography, Form, Input, InputNumber, Select, Switch, } from "antd";
+import { Button, Card, Divider, Modal, Typography, Form, Input, InputNumber, Select, Alert } from "antd";
 import { DummyDataContext } from "../context/dummy";
 import { Address, AddressInput } from "../components";
 import { useTokenList } from "eth-hooks/dapps/dex";
 import { useHistory } from "react-router-dom";
+import Moralis from "moralis";
 
 const {Option} = Select;
 
@@ -21,11 +22,12 @@ const layout = {
   };
 
 export default function RoleSelection({mainnetProvider}) {
+    const [nftInfoState, setNftInfoState] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [lenderModalVisible, setLenderModalVisible] = useState(false);
 
     const listOfTokens = useTokenList(
-        "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json",
+        "https://tokens.coingecko.com/uniswap/all.json",
     );
     const validateMessages = {
         required: "${label} is required!",
@@ -52,9 +54,20 @@ export default function RoleSelection({mainnetProvider}) {
     };
 
     const onLenderFinish = (values) => {
-        console.log(values.user);
-        alert(values.user.nftName);
-        setNftName(values.user.nftName);
+        for(let i = 0; i < nftInfoState.length; i++) {
+            if(nftInfoState[i]["name"] == values.user.nftName) {
+                setNftData([...nftData, {
+                    nftName: nftInfoState[i]["name"],
+                    description: nftInfoState[i]["description"],
+                    img: nftInfoState[i]["img"],
+                    nftAddress: nftInfoState[i]["address"],
+                    collateralAsset: values.user.collateralAsset,
+                    maxRentalDays: values.user.maxRentalDays,
+                    tokenID: nftInfoState[i]["tokenID"]
+                }]);
+            }
+        }
+        alert("Successfully sent your NFT for review to experts");
     }
 
     const history = useHistory();
@@ -102,6 +115,58 @@ export default function RoleSelection({mainnetProvider}) {
         "CryptoKitties"
     ];
 
+
+    const fetchNFTs = async() => {
+        let nftInfoArr = [];
+
+        const options = {
+          chain: "eth", 
+          //address: {address}.address.toString(),
+          address: "0x31a5ff62a1b2c0f030aee1661eab6513ae676e23",
+        }
+        const userEthNFTs = await Moralis.Web3API.account.getNFTs(options);
+        let nftOptionsLength = 50;
+        if(userEthNFTs.result.length < nftOptionsLength) {
+          nftOptionsLength = userEthNFTs.result.length;
+        }
+        for(let i = 0; i < nftOptionsLength; i++) {
+          let nftObject = {};
+            
+          var nftAddress = userEthNFTs.result[i].token_address;
+          var nftTokenID = userEthNFTs.result[i].token_id;
+
+          nftObject.tokenID = nftTokenID;
+          nftObject.address = nftAddress;
+          if(userEthNFTs.result[i].metadata !== null) {
+            const metadataObj = JSON.parse(userEthNFTs.result[i].metadata);
+            var nftName = metadataObj["name"];
+            nftObject.name = nftName;
+            if(metadataObj["description"] != null) {
+              nftObject.description = metadataObj["description"];
+              nftObject.img = metadataObj["image"];
+            } else {
+              nftObject.description = "No description available";
+              nftObject.img = "https://cdn.lifestyleasia.com/wp-content/uploads/sites/7/2021/08/26110251/CryptoKitties-FI-NFT.jpeg";
+            }
+          } else {
+            const name = userEthNFTs.result[i].name.toString();
+            const tokenId = userEthNFTs.result[i].token_id.toString();
+            var nftName = name.concat(tokenId);;
+            nftObject.name = nftName;
+            nftObject.description = "No descriptions available";
+            nftObject.img = "https://cdn.lifestyleasia.com/wp-content/uploads/sites/7/2021/08/26110251/CryptoKitties-FI-NFT.jpeg";
+          }
+          nftInfoArr.push(nftObject);
+        }
+        console.log(userEthNFTs);
+        setNftInfoState([...nftInfoArr]);
+    }
+
+    const compoundFunctionsOnClick = async () => {
+        await fetchNFTs();
+        setLenderModalVisible(true); 
+    }
+
     return(
         <div style={{width: "80%", margin: "auto", marginTop: 64 }}>
             <h1>Select your role</h1>
@@ -117,7 +182,7 @@ export default function RoleSelection({mainnetProvider}) {
                         </div>
                         <Divider />
                         <div style={{ marginTop: 20 }}>
-                            <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => setLenderModalVisible(true)}>NFT Lender</Button>
+                            <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => compoundFunctionsOnClick()}>NFT Lender</Button>
                             <br/>
                             <Text>
                                 We welcome all NFT holders on our platform. With our protocol, you can now generate some passive income from your NFTs by lending your
@@ -212,25 +277,17 @@ export default function RoleSelection({mainnetProvider}) {
                 <Form {...layout} name="nest-messages" onFinish={onLenderFinish} validateMessages={validateMessages} >
                     <Form.Item
                         name={["user", "nftName"]}
-                        label="Name of NFT"
+                        label="Select NFT"
                         rules={[
                         {
-                            required: true
+                            required: true,
+                            message: 'Please select one of your NFTs!!',
                         }
                         ]}
                     >
-                        <Input placeholder="Name of NFT to be listed" />
-                    </Form.Item>
-                    <Form.Item
-                        name={["user", "nftAddress"]}
-                        label="NFT Address"
-                        rules={[
-                        {
-                            required: true
-                        }
-                        ]}
-                        >
-                        <AddressInput ensProvider={mainnetProvider} />
+                        <Select placeholder = "List of your NFTs">
+                            {nftInfoState.map(nftInfo => <Option value={nftInfo.name}> {nftInfo.name.toString()} </Option>)}
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         name={["user", "collateralAsset"]}
@@ -270,3 +327,25 @@ export default function RoleSelection({mainnetProvider}) {
         </div>
     );
 }
+
+/*
+    Debugging console.log statements
+        //console.log(nftNames);
+        //setNftNamesCheck([...nftNames]);
+        // for(let i = 0; i < nftNames.length; i++) {
+        //   console.log("For NFT no. ", i);
+        //   console.log("Names: ", nftNames[i]);
+        //   console.log("Description: ", nftDescriptions[i]);
+        //   console.log("Address: ", nftAddresses[i]);
+        //   console.log("Token ID: ", nftTokenIDs[i]);
+        // }
+
+                    //await setNftNamesCheck([...nftNamesCheck, JSON.stringify(nftName)]);
+            //console.log(nftName);
+
+                        //await setNftNamesCheck([...nftNamesCheck, JSON.stringify(nftName)]);
+            //console.log(nftName);
+
+                    //console.log(userEthNFTs);
+        //console.log(userEthNFTs.result.length);
+*/

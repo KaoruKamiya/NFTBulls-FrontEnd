@@ -21,7 +21,7 @@ import {
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, Expert, Lender, Borrower } from "./views";
+import { ExampleUI, Hints, Subgraph, Expert, Lender, Gallery } from "./views";
 
 import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
@@ -29,6 +29,7 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 import RoleSelection from "./views/roleSelection";
 import ExpertList from "./views/expertList";
+import { BorrowerView } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -479,16 +480,26 @@ function App(props) {
           Lender View
         </Link>
       </Menu.Item>
-          <Menu.Item key="/borrower">
+          <Menu.Item key="/gallery">
             <Link
               onClick={() => {
-                setRoute("/borrower");
+                setRoute("/gallery");
               }}
-              to="/borrower"
+              to="/gallery"
             >
               NFT Gallery
             </Link>
           </Menu.Item>
+          <Menu.Item key="/borrower">
+          <Link
+            onClick={() => {
+              setRoute("/borrower");
+            }}
+            to="/borrower"
+          >
+            Borrower View
+          </Link>
+        </Menu.Item>
           <Menu.Item key="/roleSelection">
           <Link
             onClick={() => {
@@ -560,9 +571,12 @@ function App(props) {
             nftName = "CryptoPunk #7804"
           />
         </Route>
-          <Route path="/borrower">
-            <Borrower />
+          <Route path="/gallery">
+            <Gallery />
           </Route>
+        <Route path="/borrower">
+            <BorrowerView />
+        </Route>
         <Route path="/roleSelection">
           <RoleSelection
             mainnetProvider={mainnetProvider}
