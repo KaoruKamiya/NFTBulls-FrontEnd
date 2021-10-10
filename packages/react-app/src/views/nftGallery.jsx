@@ -36,8 +36,10 @@ export default function Gallery() {
     const onFinish = (values) => {
         for(let i = 0; i < approvedNftData.length; i++) {
             if(values.user.nftName == approvedNftData[i].nftName) {
-                setRentedNftData([...rentedNftData, approvedNftData[i]]);
-            }
+                setRentedNftData([...rentedNftData, approvedNftData[i]]);        
+                // Removing this NFT from the market
+                approvedNftData.splice(i, 1);
+            }          
         }
         alert("Check out your dashboard for the next steps!!");
     };
