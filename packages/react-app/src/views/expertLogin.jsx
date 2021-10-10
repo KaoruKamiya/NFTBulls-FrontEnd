@@ -1,9 +1,10 @@
-import { Button, Form, Modal, Input, Card, Row, Col, InputNumber, Select } from "antd";
+import { Button, Form, Modal, Input, Card, Row, Col, InputNumber, Select, Typography } from "antd";
 import React, { useState, useContext } from "react";
 import { Address, AddressInput } from "../components";
 import { DummyDataContext } from "../context/dummy";
  
 const {Meta} = Card;
+const {Paragraph} = Typography;
 
 const layout = {
   labelCol: {
@@ -36,34 +37,54 @@ export default function Expert({
     }
   };
 
+  const {nftData} = useContext(DummyDataContext);
+  const {lenderNftData, setLenderNftData} = useContext(DummyDataContext);
+
   const onFinish = (values) => {
     console.log(values.user.borrowerAddress);
     alert(values.user.borrowerAddress);
   };
 
   const onLoanFinish = (values) => {
-
+    console.log(values.user);
+    console.log(values.user.borrowType, values.user.collateralAmount, values.user.dailyRentPrice, values.user.repayInterval, values.user.nftName);
+    for(let i = 0; i < nftData.length; i++) {
+      if(nftData[i].nftName == values.user.nftName) {
+        setLenderNftData([...lenderNftData, {
+          nftName: nftData[i]["nftName"],
+          description: nftData[i]["description"],
+          img: nftData[i]["img"],
+          nftAddress: nftData[i]["nftAddress"],
+          collateralAsset: nftData[i]["collateralAsset"],
+          maxRentalDays: nftData[i]["maxRentalDays"],
+          tokenID: nftData[i]["tokenID"],
+          borrowType: values.user.borrowType,
+          collateralAmount: values.user.collateralAmount,
+          dailyRentPrice: values.user.dailyRentPrice,
+          repayInterval: values.user.repayInterval
+        }]);
+      }
+    }
+    alert("Data successfully sent to the lender for review");
   }
 
-  const {nftData} = useContext(DummyDataContext);
-
   return (
-      <div>
-        <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 64 }}>
+      <div> 
+        <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 32 }}>
           <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => setModalVisible(true)}>Verify Borrower</Button>
           <br/>
+          <Button size="large" type="primary" onClick={() => setLoanModalVisible(true)}>Propose Loan Terms</Button>
         </div>
-        <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 64 }}>
+        <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 32 }}>
         <h1>Expert NFT Gallery</h1> 
             <div style={{padding: "30px"}}>
                 <Row gutter={16}>
                     {
                         nftData.map(nftInfo =>  
                             <Col span={8}>
-                                <Card title={nftInfo.nftName}
+                                <Card title={<Paragraph copyable>{nftInfo.nftName}</Paragraph>}
                                     hoverable={true} 
                                     bordered={true} 
-                                    extra={<Button size="large" style={{border: "border: 2px solid #4CAF50"}} onClick={() => setLoanModalVisible(true)}>Propose Loan Terms</Button>}
                                     cover={<img alt={nftInfo.nftName} src={nftInfo.img}/>}
                                     size = "large"
                                 >
@@ -116,6 +137,17 @@ export default function Expert({
         </Modal>
         <Modal title="Loan Terms" visible={loanModalVisible} onOk={() => setLoanModalVisible(false)} onCancel={() => setLoanModalVisible(false)}>
           <Form {...layout} name="nest-messages" onFinish={onLoanFinish} validateMessages={validateMessages} >
+            <Form.Item
+              name={["user", "nftName"]}
+              label="Name of NFT"
+              rules={[
+              {
+                  required: true
+              }
+              ]}
+            >
+              <Input placeholder = "Copy and paste name of NFT" />
+            </Form.Item>
               <Form.Item
                 name={["user", "borrowType"]}
                 label="Transfer NFT to"
