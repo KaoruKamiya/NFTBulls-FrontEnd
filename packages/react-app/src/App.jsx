@@ -528,7 +528,7 @@ function App(props) {
               contractConfig={contractConfig}
             /> */}
             <Contract
-              name="NFTRent"
+              name="YourNFT"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -547,6 +547,14 @@ function App(props) {
             />
           </Route>
           <Route path="/expert">
+          <Contract
+              name="NFTRent"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
           <Expert
             mainnetProvider={mainnetProvider}
             nftName = "CryptoPunk #7804"

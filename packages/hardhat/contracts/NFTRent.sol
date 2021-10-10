@@ -87,6 +87,8 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
     ) external {
         require(_rentNft != address(0), 'Invalid NFT address');
         require(!quotes[_rentNft][_nftId], 'The quote already exists');
+        address Owner = ERC721(_rentNft).ownerOf(_nftId);
+        require(msg.sender == Owner, 'Lender not the correct owner');
         quoteVarsInfo[_rentNft][_nftId].NFTRent = _rentNft;
         quoteVarsInfo[_rentNft][_nftId].NFTId = _nftId;
         quoteVarsInfo[_rentNft][_nftId].NFTOwner = msg.sender;
@@ -163,7 +165,7 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
     }
 
     function Rent(address _rentNft, uint256 _nftId) external payable {
-        require(bytes32(NFTtoHash[_rentNft][_nftId]).length == 0, 'The requested NFT is alreay rented');
+        // require(bytes32(NFTtoHash[_rentNft][_nftId]).length == 0, 'The requested NFT is alreay rented');
         require(quoteVarsInfo[_rentNft][_nftId].quoteStatus != QuoteStatus.REQUESTED, 'The quote has not been received yet');
         require(quoteVarsInfo[_rentNft][_nftId].NFTOwner != msg.sender, 'Lender and borrower cannot be the same');
         NFTRentLineCounter = NFTRentLineCounter + 1;
@@ -187,7 +189,7 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         NFTRentLineUsage[NFTRentLineHash]._rentalPrice = quoteVarsInfo[_rentNft][_nftId].dailyRentalPrice;
 
         uint256 collateralAmount = quoteVarsInfo[_rentNft][_nftId].collateralAmount;
-        address collateralAsset = quoteVarsInfo[_rentNft][_nftId].collateralAsset;
+        require(msg.value == collateralAmount, 'Please deposit correct amount of collateral');
         depositCollateral(_rentNft, _nftId, collateralAmount);
         NFTRentLineUsage[NFTRentLineHash].loanStartTime = block.timestamp;
         NFTRentLineUsage[NFTRentLineHash].lastRepaymentTime = block.timestamp;
@@ -203,8 +205,10 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
     ) internal {
         bytes32 NFTRentLineHash = NFTtoHash[_rentNft][_nftId];
         require(NFTRentLineInfo[NFTRentLineHash].exists, 'The NFT rent is not yet requested');
-        address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
-        IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), _amount);
+        // address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
+        // Commenting for demo purposes
+        // IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), _amount);
+        msg.sender.transfer(address(this),_amount);
     }
 
     function calculateInterest(address _rentNft, uint256 _nftId) internal view returns (uint256 Interest) {
@@ -250,8 +254,9 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         uint256 _collateralAmount
     ) internal {
         bytes32 NFTRentLineHash = NFTtoHash[_rentNft][_nftId];
-        address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
-        IERC20(_collateralAsset).safeTransferFrom(address(this), msg.sender, _collateralAmount);
+        // address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
+        // IERC20(_collateralAsset).safeTransferFrom(address(this), msg.sender, _collateralAmount);
+        address(this).transfer(msg.sender,_collateralAmount);
     }
 
     function RepayNft(address _rentNft, uint256 _nftId) internal {
@@ -303,15 +308,18 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         uint256 _amount
     ) internal {
         bytes32 NFTRentLineHash = NFTtoHash[_rentNft][_nftId];
-        address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
+        // address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
         address _expert = quoteVarsInfo[_rentNft][_nftId].expert;
         if (quoteVarsInfo[_rentNft][_nftId].verified == true) {
             uint256 fees = _amount.mul(expertFee).div(10**30);
             uint256 payment = _amount.sub(fees);
-            IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), payment);
-            IERC20(_collateralAsset).safeTransferFrom(msg.sender, _expert, fees);
+            // IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), payment);
+            msg.sender.transfer(address(this),payment);
+            // IERC20(_collateralAsset).safeTransferFrom(msg.sender, _expert, fees);
+            msg.sender.transfer(_expert,fees);
         } else {
-            IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), _amount);
+            // IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), _amount);
+            msg.sender.transfer(address(this),_amount);
         }
     }
 
