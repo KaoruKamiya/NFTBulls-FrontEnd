@@ -27,7 +27,7 @@ export default function RoleSelection({mainnetProvider}) {
     const [lenderModalVisible, setLenderModalVisible] = useState(false);
 
     const listOfTokens = useTokenList(
-        "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json",
+        "https://tokens.coingecko.com/uniswap/all.json",
     );
     const validateMessages = {
         required: "${label} is required!",

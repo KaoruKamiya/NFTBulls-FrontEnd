@@ -66,9 +66,10 @@ export const DummyDataContextProvider = props => {
     ]);
     const [lenderNftData, setLenderNftData] = useState([]);
     const [approvedNftData, setApprovedNftData] = useState([]);
+    const [rentedNftData, setRentedNftData] = useState([]);
 
     return (
-        <DummyDataContext.Provider value={{nftData, setNftData, expertListData, setExpertListData, lenderNftData, setLenderNftData, approvedNftData, setApprovedNftData}}>
+        <DummyDataContext.Provider value={{nftData, setNftData, expertListData, setExpertListData, lenderNftData, setLenderNftData, approvedNftData, setApprovedNftData, rentedNftData, setRentedNftData}}>
             {props.children}
         </DummyDataContext.Provider>
     )
