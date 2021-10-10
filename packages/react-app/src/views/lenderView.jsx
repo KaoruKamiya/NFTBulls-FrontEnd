@@ -12,8 +12,6 @@ export default function Lender({
     mainnetProvider, 
     price, 
     address,
-    nftName,
-    nftAddress 
 }) {
 
   const [selectedToken, setSelectedToken] = useState("Pick a token!");
@@ -36,16 +34,53 @@ export default function Lender({
   }
 
   const fetchNFTs = async() => {
+    let nftNames = [];
+    let nftAddresses = [];
+    let nftTokenIDs = [];
+    let nftDescriptions = [];
+
     const options = {
       chain: "eth", 
-      address: "0xabD0127D996A468A79a0a8e88F4D419E40402e95"
+      address: "0x31a5ff62a1b2c0f030aee1661eab6513ae676e23"
     }
     const userEthNFTs = await Moralis.Web3API.account.getNFTs(options);
     console.log(userEthNFTs);
-    //alert(typeof userEthNFTs.result[0].metadata)
-    const metadataString = JSON.stringify(userEthNFTs.result[0].metadata);
-    console.log(JSON.parse(userEthNFTs.result[0].metadata));
-    //alert(userEthNFTs.result[0].metadata);
+    console.log(userEthNFTs.result.length);
+    let nftOptionsLength = 50;
+    if(userEthNFTs.result.length < nftOptionsLength) {
+      nftOptionsLength = userEthNFTs.result.length;
+    }
+    for(let i = 0; i < nftOptionsLength; i++) {
+      var nftAddress = userEthNFTs.result[i].token_address;
+      var nftTokenID = userEthNFTs.result[i].token_id;
+      nftTokenIDs.push(nftTokenID);
+      nftAddresses.push(nftAddress);
+      if(userEthNFTs.result[i].metadata !== null) {
+        const metadataObj = JSON.parse(userEthNFTs.result[i].metadata);
+        //console.log("Name: ", metadataObj["name"]);
+        var nftName = metadataObj["name"];
+        nftNames.push(nftName);
+        if(metadataObj["description"] != null) {
+          nftDescriptions.push(metadataObj["description"]);
+        } else {
+          nftDescriptions.push("No description available");
+        }
+      } else {
+        const name = userEthNFTs.result[i].name.toString();
+        const tokenId = userEthNFTs.result[i].token_id.toString();
+        //console.log("Name: ".concat(name.concat(tokenId)));
+        var nftName = name.concat(tokenId);
+        nftNames.push(nftName);
+        nftDescriptions.push("No descriptions available");
+      }
+    }
+    for(let i = 0; i < nftNames.length; i++) {
+      console.log("For NFT no. ", i);
+      console.log("Names: ", nftNames[i]);
+      console.log("Description: ", nftDescriptions[i]);
+      console.log("Address: ", nftAddresses[i]);
+      console.log("Token ID: ", nftTokenIDs[i]);
+    }
   }
 
   return (
@@ -55,7 +90,6 @@ export default function Lender({
             <Button type="primary" size="large" style={{marginBottom: 20}} onClick = {fetchNFTs}>Test Button</Button>
             <br/>
           </div>
-            <h2 style={{fontSize: "relative", color: "green"}}>{nftName} <span style={{color: "whitesmoke"}}>NFT Loaning Terms</span></h2> 
 
             <div style={{ margin: 8 }}>
             <div>
