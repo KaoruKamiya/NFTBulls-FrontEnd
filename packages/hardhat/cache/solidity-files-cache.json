@@ -44,8 +44,8 @@
       ]
     },
     "/home/kalpita/NFTBulls-FrontEnd/packages/hardhat/contracts/NFTRent.sol": {
-      "lastModificationDate": 1633880722826,
-      "contentHash": "2ab0e61945a0009b1d0fb1bac2eb5b78",
+      "lastModificationDate": 1633884533966,
+      "contentHash": "ab7347a61be88354ca9301756746116a",
       "sourceName": "contracts/NFTRent.sol",
       "solcConfig": {
         "version": "0.6.7",
@@ -83,7 +83,6 @@
         "@openzeppelin/contracts/token/ERC721/ERC721.sol",
         "@openzeppelin/contracts/math/SafeMath.sol",
         "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
-        "./IVerification.sol",
         "./NFTRentStorage.sol"
       ],
       "versionPragmas": [

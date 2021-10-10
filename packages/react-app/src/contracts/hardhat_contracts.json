@@ -2755,7 +2755,7 @@
       "chainId": "31337",
       "contracts": {
         "NFTRent": {
-          "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+          "address": "0x9A676e781A523b5d0C0e43731313A708CB607508",
           "abi": [
             {
               "anonymous": false,
@@ -3461,7 +3461,7 @@
               ],
               "name": "SendNft",
               "outputs": [],
-              "stateMutability": "payable",
+              "stateMutability": "nonpayable",
               "type": "function"
             },
             {
@@ -3540,25 +3540,6 @@
               "name": "claimDeposit",
               "outputs": [],
               "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "name": "expertData",
-              "outputs": [
-                {
-                  "internalType": "string",
-                  "name": "",
-                  "type": "string"
-                }
-              ],
-              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -3903,19 +3884,6 @@
               "name": "transferOwnership",
               "outputs": [],
               "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "verification",
-              "outputs": [
-                {
-                  "internalType": "contract IVerification",
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "stateMutability": "view",
               "type": "function"
             },
             {

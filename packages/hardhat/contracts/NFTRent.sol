@@ -6,19 +6,17 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "./IVerification.sol";
 import "./NFTRentStorage.sol";
-// import './expertOnboard.sol';
 
 contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
-    IVerification public verification;
 
-    mapping(address => string) public expertData;
+    mapping(address => string) expertData;
     mapping(address => mapping(uint256 => bool)) public quotes;
     mapping(address => mapping(uint256 => bytes32)) public NFTtoHash;
     mapping(address => bool) public VerifiedBorrowers;
+    mapping(address => mapping(address => mapping(uint256 => bool))) ExpertStakeStatus;
 
     modifier OnlyExpert(address _expert) {
         require(bytes(expertData[_expert]).length != 0, 'The Expert alone can access this function');
@@ -165,7 +163,7 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
     }
 
     function Rent(address _rentNft, uint256 _nftId) external payable {
-        // require(bytes32(NFTtoHash[_rentNft][_nftId]).length == 0, 'The requested NFT is alreay rented');
+        require(VerifiedBorrowers[msg.sender],'Borrower needs to be verified by the Expert');
         require(quoteVarsInfo[_rentNft][_nftId].quoteStatus != QuoteStatus.REQUESTED, 'The quote has not been received yet');
         require(quoteVarsInfo[_rentNft][_nftId].NFTOwner != msg.sender, 'Lender and borrower cannot be the same');
         NFTRentLineCounter = NFTRentLineCounter + 1;
@@ -208,7 +206,9 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         // address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
         // Commenting for demo purposes
         // IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), _amount);
-        msg.sender.transfer(address(this),_amount);
+        // msg.sender.transfer(address(this),_amount);
+        (bool sent, bytes memory data) = msg.sender.call{value: _amount}("");
+        require(sent, "Failed to send Ether");
     }
 
     function calculateInterest(address _rentNft, uint256 _nftId) internal view returns (uint256 Interest) {
@@ -218,10 +218,11 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         Interest = dailyRent * repayInterval;
     }
 
-    function SendNft(address _rentNft, uint256 _nftId) external payable onlyNFTRentLineLender(NFTtoHash[_rentNft][_nftId]) {
+    function SendNft(address _rentNft, uint256 _nftId) external onlyNFTRentLineLender(NFTtoHash[_rentNft][_nftId]) {
         bytes32 NFTRentLineHash = NFTtoHash[_rentNft][_nftId];
         require(NFTRentLineInfo[NFTRentLineHash].exists, 'The NFT rent is not yet requested');
         require(NFTRentLineInfo[NFTRentLineHash].currentStatus == NFTRentLineStatus.REQUESTED, 'The Rent has not been requested yet.');
+        require(ExpertStakeStatus[quoteVarsInfo[_rentNft][_nftId].expert][_rentNft][_nftId], 'Expert needs to stake');
         uint256 _currentTime = block.timestamp;
         uint256 _loanStartTime = NFTRentLineUsage[NFTRentLineHash].loanStartTime;
         uint256 _withdrawInterval = NFTRentLineUsage[NFTRentLineHash].withdrawInterval;
@@ -256,7 +257,8 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         bytes32 NFTRentLineHash = NFTtoHash[_rentNft][_nftId];
         // address _collateralAsset = NFTRentLineInfo[NFTRentLineHash].collateralAsset;
         // IERC20(_collateralAsset).safeTransferFrom(address(this), msg.sender, _collateralAmount);
-        address(this).transfer(msg.sender,_collateralAmount);
+        (bool sent, bytes memory data) = msg.sender.call{value: _collateralAmount}("");
+        require(sent, "Failed to send Ether");
     }
 
     function RepayNft(address _rentNft, uint256 _nftId) internal {
@@ -280,7 +282,7 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         bytes32 NFTRentLineHash = NFTtoHash[_rentNft][_nftId];
         require(NFTRentLineInfo[NFTRentLineHash].exists, 'The NFT rent is not yet requested');
         require(NFTRentLineUsage[NFTRentLineHash].repaymentsCompleted >= 1, 'All repayments are done');
-        require(NFTRentLineInfo[NFTRentLineHash].currentStatus == NFTRentLineStatus.ACTIVE, 'Renting has not begun yet');
+        require(NFTRentLineInfo[NFTRentLineHash].currentStatus == NFTRentLineStatus.ACTIVE, 'Please deposit NFT first');
         uint256 Interest = calculateInterest(_rentNft, _nftId);
         require(Interest == _amount, 'Insufficient amount');
         uint256 _currentTime = block.timestamp;
@@ -293,7 +295,7 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
             } else {
                 _repay(_rentNft, _nftId, _amount);
             }
-            NFTRentLineUsage[NFTRentLineHash].repaymentsCompleted = NFTRentLineUsage[NFTRentLineHash].repaymentsCompleted - 1;
+            NFTRentLineUsage[NFTRentLineHash].repaymentsCompleted--;
             NFTRentLineUsage[NFTRentLineHash].lastRepaymentTime = block.timestamp;
             emit Repaid(_rentNft, NFTRentLineUsage[NFTRentLineHash].repaymentsCompleted);
         } else {
@@ -314,12 +316,15 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
             uint256 fees = _amount.mul(expertFee).div(10**30);
             uint256 payment = _amount.sub(fees);
             // IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), payment);
-            msg.sender.transfer(address(this),payment);
+            (bool sentadd, bytes memory data1) = address(this).call{value: payment}("");
+            require(sentadd, "Failed to send Ether");
             // IERC20(_collateralAsset).safeTransferFrom(msg.sender, _expert, fees);
-            msg.sender.transfer(_expert,fees);
+            (bool sentExpert, bytes memory data2) = _expert.call{value: fees}("");
+            require(sentExpert, "Failed to send Ether");
         } else {
             // IERC20(_collateralAsset).safeTransferFrom(msg.sender, address(this), _amount);
-            msg.sender.transfer(address(this),_amount);
+            (bool sent, bytes memory data3) = address(this).call{value: _amount}("");
+            require(sent, "Failed to send Ether");
         }
     }
 
@@ -346,7 +351,9 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
             uint256 stake = liquidateStake(_rentNft, _nftId);
             totalClaim = totalClaim.add(stake).sub(_fees);
         }
-        IERC20(asset).safeTransferFrom(address(this), msg.sender, totalClaim);
+        // IERC20(asset).safeTransferFrom(address(this), msg.sender, totalClaim);
+        (bool sent, bytes memory data) = msg.sender.call{value: totalClaim}("");
+        require(sent, "Failed to send Ether");
     }
 
     function verifyBorrower(address _borrower) external OnlyExpert(msg.sender) {
@@ -387,11 +394,13 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
         bytes32 NFTRentLineHash = NFTtoHash[_rentNft][_nftId];
         require(NFTRentLineInfo[NFTRentLineHash].exists, 'The NFT rent line does not exist');
         require(NFTRentLineInfo[NFTRentLineHash].currentStatus == NFTRentLineStatus.REQUESTED, 'Rent not requested');
+        require(!ExpertStakeStatus[msg.sender][_rentNft][_nftId], 'Expert already staked');
         uint256 stake = quoteVarsInfo[_rentNft][_nftId].collateralAmount.mul(expertStake).div(10**30);
         if (quoteVarsInfo[_rentNft][_nftId].verified == true) {
             require(stake == _amount, 'The amount provided is not correct');
             depositCollateral(_rentNft, _nftId, _amount);
         }
+        ExpertStakeStatus[msg.sender][_rentNft][_nftId] = true;
     }
 
     function ClaimStake(address _rentNft, uint256 _nftId) external OnlyExpert(msg.sender) {
