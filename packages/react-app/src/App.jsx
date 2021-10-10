@@ -519,24 +519,6 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            {/*
-            <Contract
-              name="YourContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            /> */}
-            <Contract
-              name="YourNFT"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-            */}
             <RoleSelection
               mainnetProvider={mainnetProvider}
             />
@@ -552,14 +534,6 @@ function App(props) {
             />
           </Route>
           <Route path="/expert">
-          <Contract
-              name="NFTRent"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
           <Expert
             mainnetProvider={mainnetProvider}
             nftName = "CryptoPunk #7804"
@@ -570,6 +544,9 @@ function App(props) {
           </Route>
         <Route path="/borrower">
             <BorrowerView />
+        </Route>
+        <Route path="/borrower">
+            <ExampleUI />
         </Route>
           <Route path="/expertList">
             <ExpertList />
