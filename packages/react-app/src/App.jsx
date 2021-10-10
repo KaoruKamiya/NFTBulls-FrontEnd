@@ -457,7 +457,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Role Selection
             </Link>
           </Menu.Item>
           <Menu.Item key="/expert">
@@ -500,16 +500,6 @@ function App(props) {
             Borrower View
           </Link>
         </Menu.Item>
-          <Menu.Item key="/roleSelection">
-          <Link
-            onClick={() => {
-              setRoute("/roleSelection");
-            }}
-            to="/roleSelection"
-          >
-            Role Selection
-          </Link>
-        </Menu.Item>
         <Menu.Item key="/expertList">
         <Link
           onClick={() => {
@@ -529,8 +519,8 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
-            {/* <Contract
+            {/*
+            <Contract
               name="YourContract"
               signer={userSigner}
               provider={localProvider}
@@ -545,6 +535,10 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
+            />
+            */}
+            <RoleSelection
+              mainnetProvider={mainnetProvider}
             />
           </Route>
           <Route path="/lender">
@@ -577,11 +571,6 @@ function App(props) {
         <Route path="/borrower">
             <BorrowerView />
         </Route>
-        <Route path="/roleSelection">
-          <RoleSelection
-            mainnetProvider={mainnetProvider}
-          />
-            </Route>
           <Route path="/expertList">
             <ExpertList />
           </Route>
