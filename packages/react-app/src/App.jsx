@@ -545,9 +545,6 @@ function App(props) {
         <Route path="/borrower">
             <BorrowerView />
         </Route>
-        <Route path="/borrower">
-            <ExampleUI />
-        </Route>
           <Route path="/expertList">
             <ExpertList />
           </Route>
