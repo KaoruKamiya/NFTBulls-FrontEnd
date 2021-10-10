@@ -1,6 +1,9 @@
-import { Button, Form, Modal } from "antd";
-import React, { useState } from "react";
+import { Button, Form, Modal, Input, Card, Row, Col } from "antd";
+import React, { useState, useContext } from "react";
 import { Address, AddressInput } from "../components";
+import { DummyDataContext } from "../context/dummy";
+ 
+const {Meta} = Card;
 
 const layout = {
   labelCol: {
@@ -16,7 +19,6 @@ const layout = {
 
 export default function Expert({  
     mainnetProvider, 
-    nftName,
 }) {
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,13 +37,13 @@ export default function Expert({
   const onFinish = (values) => {
     console.log(values.user.borrowerAddress);
     alert(values.user.borrowerAddress);
-    // setExpertListData([...expertListData, {key:JSON.stringify(expertListData.length + 1),
-    //                                         twthandle: "https://twitter.com/".concat(values.user.twthandle.toString()),
-    //                                         ... values.user,
-    //                                         expertise: values.projects,
-    //                                         loansFacilitated: 0,
-    //                                         verified: "Pending"}]);
-};
+  };
+
+  const onClick = () =>  {
+    alert("Rent this NFT");
+  };
+
+  const {nftData} = useContext(DummyDataContext);
 
   return (
       <div>
@@ -49,8 +51,33 @@ export default function Expert({
           <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => setModalVisible(true)}>Verify Borrower</Button>
           <br/>
         </div>
-        <div style={{ border: "1px solid #cccccc", padding: 16, width: "80%", margin: "auto", marginTop: 32 }}>
-            <h2 style={{fontSize: "relative", color: "green"}}>{nftName} <span style={{color: "whitesmoke"}}>NFT Loaning Terms</span></h2> 
+        <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 64 }}>
+        <h1>NFT Gallery (Borrower View) </h1> 
+            <div style={{padding: "30px"}}>
+                <Row gutter={16}>
+                    {
+                        nftData.map(nftInfo =>  
+                            <Col span={8}>
+                                <Card title={nftInfo.nftName}
+                                    hoverable={true} 
+                                    bordered={true} 
+                                    extra={<Button size="large" style={{border: "border: 2px solid #4CAF50"}} onClick={onClick}>Propose Loan Terms</Button>}
+                                    cover={<img alt={nftInfo.nftName} src={nftInfo.img}/>}
+                                    size = "large"
+                                >
+                                    <Meta description = {"NFT Address: ".concat(nftInfo.nftAddress)}/>
+                                    <br />
+                                    <Meta description = {"Desired Collateral Asset: ".concat(nftInfo.collateralAsset)}/>
+                                    <br />
+                                    <Meta description = {"Maximum Rental Duration: ".concat(nftInfo.maxRentalDays)}/>
+                                    <br />
+                                    <Meta description = {"Description: ".concat(nftInfo.description)}/>
+                                </Card>        
+                            </Col>
+                        )
+                    }
+                </Row>
+            </div>
         </div>
         <Modal title="Expert Form" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
           <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
@@ -64,6 +91,17 @@ export default function Expert({
               ]}
               >
                 <AddressInput ensProvider={mainnetProvider} />
+            </Form.Item>
+            <Form.Item
+              name={["user", "twtHandle"]}
+              label="Twitter Handle"
+              rules={[
+              {
+                  required: true
+              }
+              ]}
+            >
+              <Input placeholder= "Twitter handle for verification"/>
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
               <Button type="primary" htmlType="submit">

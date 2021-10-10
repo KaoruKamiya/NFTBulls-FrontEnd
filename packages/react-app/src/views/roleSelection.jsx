@@ -41,6 +41,7 @@ export default function RoleSelection({mainnetProvider}) {
     };
 
     const {expertListData, setExpertListData} = useContext(DummyDataContext);
+    const {nftData, setNftData} = useContext(DummyDataContext);
     
     const onFinish = (values) => {
         console.log(values.user.name, values.user.association, values.user.experience, values.user.twthandle);
@@ -55,11 +56,17 @@ export default function RoleSelection({mainnetProvider}) {
     const onLenderFinish = (values) => {
         for(let i = 0; i < nftInfoState.length; i++) {
             if(nftInfoState[i]["name"] == values.user.nftName) {
-                console.log("Found the bitch: ", nftInfoState[i]);
-                console.log("Address: ", nftInfoState[i]["address"]);
+                setNftData([...nftData, {
+                    nftName: nftInfoState[i]["name"],
+                    description: nftInfoState[i]["description"],
+                    img: nftInfoState[i]["img"],
+                    nftAddress: nftInfoState[i]["address"],
+                    collateralAsset: values.user.collateralAsset,
+                    maxRentalDays: values.user.maxRentalDays,
+                    tokenID: nftInfoState[i]["tokenID"]
+                }]);
             }
         }
-        console.log(values.user.collateralAsset);
         alert("Successfully sent your NFT for review to experts");
     }
 
@@ -136,10 +143,10 @@ export default function RoleSelection({mainnetProvider}) {
             nftObject.name = nftName;
             if(metadataObj["description"] != null) {
               nftObject.description = metadataObj["description"];
-              nftObject.image = metadataObj["image"];
+              nftObject.img = metadataObj["image"];
             } else {
               nftObject.description = "No description available";
-              nftObject.image = "https://cdn.lifestyleasia.com/wp-content/uploads/sites/7/2021/08/26110251/CryptoKitties-FI-NFT.jpeg";
+              nftObject.img = "https://cdn.lifestyleasia.com/wp-content/uploads/sites/7/2021/08/26110251/CryptoKitties-FI-NFT.jpeg";
             }
           } else {
             const name = userEthNFTs.result[i].name.toString();
@@ -147,7 +154,7 @@ export default function RoleSelection({mainnetProvider}) {
             var nftName = name.concat(tokenId);;
             nftObject.name = nftName;
             nftObject.description = "No descriptions available";
-            nftObject.image = "https://cdn.lifestyleasia.com/wp-content/uploads/sites/7/2021/08/26110251/CryptoKitties-FI-NFT.jpeg";
+            nftObject.img = "https://cdn.lifestyleasia.com/wp-content/uploads/sites/7/2021/08/26110251/CryptoKitties-FI-NFT.jpeg";
           }
           nftInfoArr.push(nftObject);
         }

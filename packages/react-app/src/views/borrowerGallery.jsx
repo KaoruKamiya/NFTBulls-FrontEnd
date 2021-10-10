@@ -1,7 +1,7 @@
 import React, {useState, useContext} from "react";
 import {Button, Card, Col, Row} from 'antd';
 import { DummyDataContext } from "../context/dummy";
-
+ 
 const {Meta} = Card;
 
 export default function Borrower() {
@@ -15,7 +15,7 @@ export default function Borrower() {
     return (
         <div>
             <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 64 }}>
-                <h1>NFT Gallerdsafsy (Borrower View) </h1> 
+                <h1>NFT Gallery (Borrower View) </h1> 
                     <div style={{padding: "30px"}}>
                         <Row gutter={16}>
                             {
