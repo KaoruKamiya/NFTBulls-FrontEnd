@@ -57,24 +57,24 @@ contract NFTRent is Initializable, OwnableUpgradeable, NFTRentStorage {
     event VerifierAdded(address verifier, string metadata);
     event VerifierRemoved(address verifier);
 
-    function initialize(address _admin, address _verification) public initializer {
-        super.__Ownable_init();
-        super.transferOwnership(_admin);
-        verification = IVerification(_verification);
-    }
+    // function initialize(address _admin, address _verification) public initializer {
+    //     super.__Ownable_init();
+    //     super.transferOwnership(_admin);
+    //     verification = IVerification(_verification);
+    // }
 
-    function addExpert(address _verifier, string calldata _metadata) external onlyOwner {
+    function addExpert(address _verifier, string calldata _metadata) external {
         require(bytes(expertData[_verifier]).length == 0, 'AddExpert: Verifier already exists');
         // verification.addVerifier(_verifier);
-        verification.registerMasterAddress(_verifier, true);
+        // verification.registerMasterAddress(_verifier, true);
         expertData[_verifier] = _metadata;
         emit VerifierAdded(_verifier, _metadata);
     }
 
-    function removeExpert(address _verifier) external onlyOwner {
+    function removeExpert(address _verifier) external {
         require(bytes(expertData[_verifier]).length != 0, 'AddExpert: Verifier does not exists');
         delete expertData[_verifier];
-        verification.unregisterMasterAddress(_verifier, address(this));
+        // verification.unregisterMasterAddress(_verifier, address(this));
         // verification.removeVerifier(_verifier);
         emit VerifierRemoved(_verifier);
     }

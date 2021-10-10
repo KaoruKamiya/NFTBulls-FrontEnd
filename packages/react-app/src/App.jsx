@@ -519,8 +519,16 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <Contract
+            {/* <Contract
               name="YourContract"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            /> */}
+            <Contract
+              name="NFTRent"
               signer={userSigner}
               provider={localProvider}
               address={address}

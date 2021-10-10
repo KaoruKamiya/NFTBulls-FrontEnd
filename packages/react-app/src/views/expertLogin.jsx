@@ -1,6 +1,6 @@
 import { Button, Form, Modal } from "antd";
 import React, { useState } from "react";
-import { Address, AddressInput } from "../components";
+import { Address, AddressInput, Contract } from "../components";
 
 const layout = {
   labelCol: {
@@ -17,6 +17,15 @@ const layout = {
 export default function Expert({  
     mainnetProvider, 
     nftName,
+    purpose,
+    setPurposeEvents,
+    address,
+    localProvider,
+    yourLocalBalance,
+    price,
+    tx,
+    readContracts,
+    writeContracts,
 }) {
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -46,7 +55,9 @@ export default function Expert({
   return (
       <div>
         <div style={{padding: 16, width: "80%", margin: "auto", marginTop: 64 }}>
-          <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => setModalVisible(true)}>Verify Borrower</Button>
+          <Button type="primary" size="large" style={{marginBottom: 20}} onClick={() => {
+            setModalVisible(true);
+            }}>Verify Borrower</Button>
           <br/>
         </div>
         <div style={{ border: "1px solid #cccccc", padding: 16, width: "80%", margin: "auto", marginTop: 32 }}>
